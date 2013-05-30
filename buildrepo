@@ -1,0 +1,146 @@
+#!/bin/bash
+
+echoerr () {
+	# Code from http://stackoverflow.com/a/2990533/2243495
+	echo "$@" 1>&2
+}
+
+nme () {
+	# Modeled after example at http://tldp.org/LDP/abs/html/string-manipulation.html#RANDSTRING
+	local length=10
+	local data=$(echo "$RANDOM" | md5sum)
+	echo "${data:0:$length}"
+}
+
+randomfile () {
+	local name=$(nme)
+	local data=$(nme)
+
+	while [ -e "$name" ]
+	do
+		name=$(nme)
+	done
+
+	echoerr	"Creating '$name' containing '$data'..."
+	echo "$data" > "$name"
+}
+
+littleBusy () {
+	echoerr "Being a little busy..."
+
+	work
+	commit
+}
+
+beBusy () {
+	echoerr	"Being busy..."
+
+	for i in {1..10}
+	do
+		work
+		commit
+	done
+}
+
+work () {
+	echoerr	"Working..."
+
+	for i in {1..5}
+	do
+		randomfile
+	done
+}
+
+commit () {
+	echoerr	"Committing!"
+
+	if [ -z "$1" ]
+	then
+		git add . 1>&2
+		git commit -m "Autocommit on $(git branch --contains)" 1>&2
+	else
+		git commit -m "$1" 1>&2
+	fi
+}
+
+onBranch () {
+	local newBranch=$(nme)
+	echoerr	"On branch $newBranch..."
+	git checkout -b $newBranch 1>&2
+	$1
+	git checkout master 1>&2
+	echo $newBranch
+}
+
+onExistBranch () {
+	echoerr	"On branch $1..."
+	git checkout $1 1>&2
+	$2
+	git checkout master 1>&2
+}
+
+destroyGit () {
+	rm -Irf .git/ *
+}
+
+main () {
+	# Set up a repo
+	git init
+
+	# Do a little in our master branch.
+	littleBusy
+
+	# Create three features and work on each of them.
+	feature1=$(onBranch beBusy)
+
+	feature2=$(onBranch beBusy)
+
+	feature3=$(onBranch beBusy)
+
+	# Do a little in our master branch.
+	littleBusy
+
+	# Work more on our existing feature branches.
+	onExistBranch $feature2 beBusy
+	onExistBranch $feature1 beBusy
+
+	# Yet a little more in our master branch.
+	littleBusy
+
+	# Make a release! Fork the release branch from our current master branch
+	git checkout -b release
+	git tag -a v1.0 -m "Our first release"
+
+	# Return to master
+	git checkout master
+
+	# Merge feature 2 into master while compressing its history. Then delete its branch.
+	git merge --squash $feature2
+	git commit -m "Feature 2 done"
+	git branch -D $feature2
+
+	# Oops! We need to fix a bug in the release!
+	git checkout release
+	littleBusy
+	git tag -a v1.1 -m "Are we ever stupid!"
+
+	# Go back to the regular course of things:
+	git checkout master
+
+	# Feature 1 is now approved!
+	git merge --squash $feature1
+	git commit -m "Feature 1 done"
+	git branch -D $feature1
+
+	# Make another release
+	git checkout release
+	git merge master -m "Releasing version 2!"
+	git tag -a v2.0 -m "Finally they approved feature 1"
+
+	# Return to normal
+	git checkout master
+
+
+	# They decided they didn't want feature 3. Get rid of it.
+	git branch -D $feature3
+}
