@@ -80,12 +80,28 @@ onExistBranch () {
 }
 
 destroyGit () {
-	rm -Irf .git/ *
+	# This is just a little too dangerous to leave unsupervised.
+	#rm -Irf .git/ *
+	# Noop to keep Bash happy.
+	:
 }
 
-main () {
-	# Set up a repo
+setUpTestEnv () {
+	local name=$(nme)
+	# Create a randomly-named directory
+	mkdir "$name"
+
+	# Change into it
+	cd "$name"
+
+	# Set up a repo there.
 	git init
+}
+
+
+main () {
+	# For safety, create a new test environment
+	setUpTestEnv
 
 	# Do a little in our master branch.
 	littleBusy
