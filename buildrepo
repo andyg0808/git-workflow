@@ -1,17 +1,20 @@
 #!/bin/bash
 
+# Works exactly like `echo`, except it outputs to stderr.
 echoerr () {
 	# Code from http://stackoverflow.com/a/2990533/2243495
 	echo "$@" 1>&2
 }
 
+# Generate a random string
 nme () {
 	# Modeled after example at http://tldp.org/LDP/abs/html/string-manipulation.html#RANDSTRING
-	local length=10
+	local length=10	# The number of characters to generate
 	local data=$(echo "$RANDOM" | md5sum)
 	echo "${data:0:$length}"
 }
 
+# Create a file with a random name and random data
 randomfile () {
 	local name=$(nme)
 	local data=$(nme)
@@ -25,6 +28,7 @@ randomfile () {
 	echo "$data" > "$name"
 }
 
+# Make a single commit with some new `work`
 littleBusy () {
 	echoerr "Being a little busy..."
 
@@ -32,6 +36,7 @@ littleBusy () {
 	commit
 }
 
+# Make ten commits with `work`
 beBusy () {
 	echoerr	"Being busy..."
 
@@ -42,6 +47,7 @@ beBusy () {
 	done
 }
 
+# Create five random files
 work () {
 	echoerr	"Working..."
 
@@ -51,6 +57,7 @@ work () {
 	done
 }
 
+# Commit everything in the repo; with no arguments, generate a commit message, with an argument, use it as the commit message.
 commit () {
 	echoerr	"Committing!"
 
@@ -63,6 +70,7 @@ commit () {
 	fi
 }
 
+# Execute the argument on a randomly-named branch of its own. Return the name of the branch on STDOUT
 onBranch () {
 	local newBranch=$(nme)
 	echoerr	"On branch $newBranch..."
@@ -72,6 +80,7 @@ onBranch () {
 	echo $newBranch
 }
 
+# Execute the second argument on the branch specified by the first argument
 onExistBranch () {
 	echoerr	"On branch $1..."
 	git checkout $1 1>&2
@@ -79,6 +88,7 @@ onExistBranch () {
 	git checkout master 1>&2
 }
 
+# Obliterate a git repo and everything in the current folder.
 destroyGit () {
 	# This is just a little too dangerous to leave unsupervised.
 	#rm -Irf .git/ *
@@ -86,6 +96,7 @@ destroyGit () {
 	:
 }
 
+# Create a new git repo in a randomly-named folder
 setUpTestEnv () {
 	local name=$(nme)
 	# Create a randomly-named directory
@@ -99,7 +110,8 @@ setUpTestEnv () {
 }
 
 
-main () {
+cat <<END
+Usage example:
 	# For safety, create a new test environment
 	setUpTestEnv
 
@@ -159,4 +171,4 @@ main () {
 
 	# They decided they didn't want feature 3. Get rid of it.
 	git branch -D $feature3
-}
+END
