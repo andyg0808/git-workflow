@@ -107,9 +107,11 @@ setUpTestEnv () {
 	cd "$name"
 
 	# Set up a repo there.
-	git init
-}
+	git init 1>&2
 
+	# Return the name of the branch
+	echo "$name"
+}
 
 cat <<END
 Usage example:
