@@ -53,7 +53,7 @@ randomfile () {
 littleBusy () {
 	echoerr "Being a little busy..."
 
-	work
+	work "$@"
 	commit
 }
 
@@ -63,7 +63,7 @@ beBusy () {
 
 	for i in {1..10}
 	do
-		work
+		work "$@"
 		commit
 	done
 }
@@ -74,7 +74,7 @@ work () {
 
 	for i in {1..5}
 	do
-		randomfile
+		randomfile "$@"
 	done
 }
 
