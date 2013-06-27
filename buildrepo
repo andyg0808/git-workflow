@@ -100,6 +100,9 @@ destroyGit () {
 # Create a new git repo in a randomly-named folder
 setUpTestEnv () {
 	local name=$(nme)
+
+	echoerr "Setting up new git repo..."
+
 	# Create a randomly-named directory
 	mkdir "$name"
 
@@ -108,6 +111,11 @@ setUpTestEnv () {
 
 	# Set up a repo there.
 	git init 1>&2
+
+	# Move back out of it
+	cd ..
+
+	echoerr "Done setting up new repo."
 
 	# Return the name of the branch
 	echo "$name"
