@@ -14,10 +14,31 @@ nme () {
 	echo "${data:0:$length}"
 }
 
+# Generate a fractal image from a random seed
+img () {
+	local seed="$RANDOM"
+	local data=$(ppmforge -seed "$seed")
+	echo "$data"
+}
+
 # Create a file with a random name and random data
 randomfile () {
 	local name=$(nme)
-	local data=$(nme)
+	local data
+	if [ -z "$1" ]
+	then
+		data=$(nme)
+	else
+		# Handle possible special data types
+		case "$1" in
+			"img")
+				data=$(img)
+				;;
+			*)
+				data=$(nme)
+				;;
+		esac
+	fi
 
 	while [ -e "$name" ]
 	do
