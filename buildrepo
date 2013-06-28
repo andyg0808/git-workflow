@@ -7,6 +7,10 @@ echoerr () {
 }
 
 # Generate a random string
+# Usage: nme [length]
+#	length:
+#	 The length of the string that should be generated. Lengths over 32
+#	 will result in a 32-character string
 nme () {
 	# Modeled after example at http://tldp.org/LDP/abs/html/string-manipulation.html#RANDSTRING
 	local length=10	# The number of characters to generate
@@ -18,7 +22,10 @@ nme () {
 	echo "${data:0:$length}"
 }
 
-# Generate a fractal image from a random seed
+# Generate a fractal image from a random seed.
+# Usage: img [optional-args]
+# 	optional-args:
+#	 Arguments that should be passed to ppmforge to control generation of image
 img () {
 	local seed="$RANDOM"
 	local data=$(ppmforge -seed "$seed" "$@")
@@ -42,7 +49,22 @@ snd () {
 	echo "$data"
 }
 
-# Create a file with a random name and random data
+# Create a file with a random name and random data. Optionally can specify one of `nme`, `img`, or `snd` to generate the file data with one of those functions.
+# Usage: randomfile [nme|img|snd [optional-arguments]]
+#	nme:
+#	 Generates a file containing text data.
+#
+#	img:
+#	 Generates a file containing image data.
+#
+#	snd:
+#	 Generates a file containing sound data.
+#
+#	exec:
+#	 Runs the remaining arguments and uses their stdout as the data for the file.
+#
+#	optional-arguments:
+#	 Arguments as for the function of the same name as the file data type. E.g. arguments for `snd` if run with `snd` as the first argument.
 randomfile () {
 	local name=$(nme)
 	local data
@@ -82,6 +104,9 @@ randomfile () {
 }
 
 # Make a single commit with some new `work`
+# Usage: littleBusy [arguments]
+#	arguments:
+#	 Arguments to pass to `work`
 littleBusy () {
 	echoerr "Being a little busy..."
 
@@ -90,6 +115,9 @@ littleBusy () {
 }
 
 # Make ten commits with `work`
+# Usage: beBusy [arguments]
+#	arguments:
+#	 Arguments to pass to `work`
 beBusy () {
 	echoerr	"Being busy..."
 
@@ -100,7 +128,10 @@ beBusy () {
 	done
 }
 
-# Create five random files
+# Create five random files with `randomfile`
+# Usage: work [arguments]
+#	arguments:
+#	 Arguments to pass to `randomfile`
 work () {
 	echoerr	"Working..."
 
@@ -111,6 +142,9 @@ work () {
 }
 
 # Commit everything in the repo; with no arguments, generate a commit message, with an argument, use it as the commit message.
+# Usage: commit [message]
+#	message:
+#	 The commit message for the commit.
 commit () {
 	echoerr	"Committing!"
 
@@ -142,6 +176,12 @@ annexCommit () {
 }
 
 # Execute the argument on a randomly-named branch of its own. Return the name of the branch on STDOUT
+# Usage: onBranch command [arguments...]
+#	command:
+#	 The command to execute on a new branch.
+#
+#	arguments:
+#	 Arguments to the specified command.
 onBranch () {
 	local newBranch=$(nme)
 	echoerr	"On branch $newBranch..."
@@ -152,6 +192,15 @@ onBranch () {
 }
 
 # Execute the second argument on the branch specified by the first argument
+# Usage: onExistBranch branch command [arguments...]
+#	branch:
+#	 The branch on which to execute the specified command.
+#
+#	command:
+#	 The command to execute on the specified branch.
+#
+#	arguments:
+#	 Arguments to the specified command.
 onExistBranch () {
 	echoerr	"On branch $1..."
 	git checkout $1 1>&2
@@ -160,7 +209,7 @@ onExistBranch () {
 	git checkout master 1>&2
 }
 
-# Obliterate a git repo and everything in the current folder.
+# [DISABLED] Obliterate a git repo and everything in the current folder.
 destroyGit () {
 	# This is just a little too dangerous to leave unsupervised.
 	#rm -Irf .git/ *
@@ -169,6 +218,9 @@ destroyGit () {
 }
 
 # Create a new git repo in a randomly-named folder
+# Usage: setUpTestEnv [annex]
+#	annex:
+#	 Specify "annex" to create a git-annex-enabled repo
 setUpTestEnv () {
 	local name=$(nme)
 
