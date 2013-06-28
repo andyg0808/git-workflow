@@ -10,6 +10,10 @@ echoerr () {
 nme () {
 	# Modeled after example at http://tldp.org/LDP/abs/html/string-manipulation.html#RANDSTRING
 	local length=10	# The number of characters to generate
+	if [ -n "$1" ]
+	then
+		length="$1"
+	fi
 	local data=$(echo "$RANDOM" | md5sum)
 	echo "${data:0:$length}"
 }
@@ -17,7 +21,7 @@ nme () {
 # Generate a fractal image from a random seed
 img () {
 	local seed="$RANDOM"
-	local data=$(ppmforge -seed "$seed")
+	local data=$(ppmforge -seed "$seed" "$@")
 	echo "$data"
 }
 
@@ -46,10 +50,21 @@ randomfile () {
 	then
 		data=$(nme)
 	else
+		local dataType="$1"
+		shift
 		# Handle possible special data types
-		case "$1" in
+		case "$dataType" in
+			"nme")
+				data=$(nme "$@")
+				;;
 			"img")
-				data=$(img)
+				data=$(img "$@")
+				;;
+			"snd")
+				data=$(snd "$@")
+				;;
+			"exec")
+				data=$("$@")
 				;;
 			*)
 				data=$(nme)
@@ -131,7 +146,7 @@ onBranch () {
 	local newBranch=$(nme)
 	echoerr	"On branch $newBranch..."
 	git checkout -b $newBranch 1>&2
-	$1
+	eval "$@"
 	git checkout master 1>&2
 	echo $newBranch
 }
@@ -140,7 +155,8 @@ onBranch () {
 onExistBranch () {
 	echoerr	"On branch $1..."
 	git checkout $1 1>&2
-	$2
+	shift
+	eval "$@"
 	git checkout master 1>&2
 }
 
@@ -166,6 +182,12 @@ setUpTestEnv () {
 
 	# Set up a repo there.
 	git init 1>&2
+
+	#If annex requested, init it.
+	if [ "$1" == "annex" ]
+	then
+		git annex init 1>&2
+	fi
 
 	# Move back out of it
 	cd ..
