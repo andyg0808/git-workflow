@@ -21,6 +21,23 @@ img () {
 	echo "$data"
 }
 
+# Generate 15 seconds of sound.
+# Usage snd [optional-args]
+#	optional-args:
+#	 Arguments to pass to sox as effects & their arguements. Will be
+#	 followed by a trim 0 15 to only save the first 15 seconds of whatever
+#	 is generated.
+snd () {
+	local data
+	if [ -z "$1" ]
+	then
+		data=$(sox -n -t wav - synth 15 pinknoise )
+	else
+		data=$(sox -n -t wav - "$@" trim 0 15)
+	fi
+	echo "$data"
+}
+
 # Create a file with a random name and random data
 randomfile () {
 	local name=$(nme)
