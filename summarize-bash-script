@@ -1,0 +1,45 @@
+#!/bin/sed -nrf
+# If it's a hash (comment at column 0), process it.
+/^#/b hash
+
+# If it's a function, process it.
+/\(\)\s+\{$/b func
+
+# Otherwise, delete it.
+d
+
+:hash
+# Put four spaces at the beginning of each line
+#s/^#/#    /
+
+# Append the pattern space to the hold space with newline
+H
+
+# Done. Go to end.
+b
+
+:func
+# Process the function:
+# Put a bracket to close the function
+s/$/\}/
+
+# Print the function name
+p
+
+# Replace the function with the hashes
+g
+
+# Remove the initial newline on the hashes
+s/^\n//
+
+# Append a newline to the hashes
+s/$/\n/
+
+# Print hashes
+p
+
+# Clear pattern space
+z
+
+# Swap that into hold space (clearing hold space)
+x
