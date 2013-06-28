@@ -7,8 +7,10 @@ echoerr () {
 }
 
 dir="$(dirname $0)"
-file="$dir"/"buildrepo"
-echoerr "Looking in $dir for $file..."
+lib="$dir"/"buildrepo"
+summarize="$dir"/"summarize-bash-script"
+
+echoerr "Looking in $dir for $lib"
 
 echoerr "Creating dictionary of buildrepo functions..."
 
@@ -18,11 +20,14 @@ cat <<END
 # List of functions in buildrepo:
 END
 
-sed -r '/^#|()\s+\{$/!d; /^#!/d; s/^(.+)\s+\{$/#     \1/' "$file"
+sed -nr -f "$summarize" "$lib"
 
 echoerr "Adding a usage example..."
 # Add a usage example
 cat <<START
+
+# Include functions from "$lib"
+source '$lib'
 
 
 
@@ -36,9 +41,6 @@ cat <<START
 cat <<'END'
 # Usage example:
 main () {
-	# Include functions
-	source '$file'
-
 START
 
 cat <<'FINS'
