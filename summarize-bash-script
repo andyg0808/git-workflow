@@ -60,6 +60,15 @@ s/$/\}/
 # Print the function name
 p
 
+# Print vim fold marker
+i\
+#{{{
+
+# Print the close fold marker with a trailing newline at the end of this cycle
+a\
+#}}}\
+
+
 # Replace the function with the hashes
 g
 
@@ -67,7 +76,7 @@ g
 s/^\n//
 
 # Append a newline to the hashes
-s/$/\n/
+#s/$/\n/
 
 # Print hashes
 p
