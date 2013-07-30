@@ -23,6 +23,9 @@
 # If it's a function, process it.
 /\(\)\s+\{$/b func
 
+# If it's a blank line, invalidate the current collection of hash
+/^$/b blank
+
 # Otherwise, delete it.
 d
 
@@ -35,6 +38,16 @@ d
 
 # Append the pattern space to the hold space with newline
 H
+
+# Done. Go to end.
+b
+
+:blank
+# Clear pattern space
+z
+
+# Swap that into hold space (clearing hold space)
+x
 
 # Done. Go to end.
 b
