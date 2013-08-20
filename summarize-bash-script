@@ -34,7 +34,7 @@ d
 /^#!/d
 
 # Put a tab at the beginning of each line
-#s/^#/\t#/
+s/^#/\t#/
 
 # Append the pattern space to the hold space with newline
 H
@@ -56,6 +56,9 @@ b
 # Process the function:
 # Put a bracket to close the function
 s/$/\}/
+
+# Comment it out
+s/^/#/
 
 # Print the function name
 p
