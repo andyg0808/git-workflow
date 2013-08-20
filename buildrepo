@@ -237,6 +237,7 @@ destroyGit () {
 # Usage: setUpTestEnv [annex]
 #	annex:
 #	 Specify "annex" to create a git-annex-enabled repo
+# Returns: The name of the directory
 setUpTestEnv () {
 	local name=$(nme)
 
@@ -262,6 +263,6 @@ setUpTestEnv () {
 
 	echoerr "Done setting up new repo."
 
-	# Return the name of the branch
+	# Return the name of the directory
 	echo "$name"
 }
