@@ -23,7 +23,7 @@ echoerr () {
 	echo "$@" 1>&2
 }
 
-dir="$(dirname $0)"
+dir="$(dirname "$(readlink -e "$0")")"
 lib="$dir"/"buildrepo"
 summarize="$dir"/"summarize-bash-script"
 
@@ -123,5 +123,7 @@ cat <<'FINS'
 }
 # Run main
 #main # Uncomment this line to actually run main
+# Quit before we hit the END below
+exit
 END
 FINS
