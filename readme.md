@@ -9,6 +9,6 @@ certain state, and thus could recreate that state over and over for experiments
 from there. It also provides a way to document a successful workflow.
 
 Some examples of included functions follow:
-work: Creates multiple files with random names. Allows simulation of a user working in one line of bash.
 
-beBusy: Creates ten commits, each creating five files with work.
+* work: Creates multiple files with random names. Allows simulation of a user working in one line of bash.
+* beBusy: Creates ten commits, each creating five files with work.
