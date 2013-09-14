@@ -54,8 +54,8 @@ b
 
 :func
 # Process the function:
-# Put a bracket to close the function
-s/$/\}/
+# Put a space, colon, space, bracket to close the function with a bash noop in it
+#s/$/\}/
 
 # Comment it out
 s/^/#/
