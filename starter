@@ -62,7 +62,8 @@ START
 
 cat <<'FINS'
 	# For safety, create a new test environment
-	setUpTestEnv
+	testEnv="$(setUpTestEnv)"
+	cd "$testEnv"
 
 	# Do a little in our master branch.
 	littleBusy
